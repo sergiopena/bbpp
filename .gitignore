@@ -1,0 +1,6 @@
+/bbpp/.venv/
+/bbpp/.idea/
+/.idea/
+/bbpp.egg-info/
+/build/lib/bbpp/
+/dist/

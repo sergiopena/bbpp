@@ -1,0 +1,5 @@
+pytest
+pytest-mock
+pytest-httpx
+pytest-cov
+pytest-asyncio
