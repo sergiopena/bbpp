@@ -24,6 +24,7 @@ def test_config_calls_write_file_with_sound(mocker):
 
 
 def test_config_reads_file_if_not_username_and_password(mocker):
+    mocker.patch('os.path.exists', return_value=True)
     p = mocker.patch(
         'builtins.open',
         mocker.mock_open(
@@ -41,6 +42,8 @@ def test_config_reads_file_if_not_username_and_password(mocker):
 
 def test_check_config_file_exists(mocker):
     p = mocker.patch('os.path.exists', return_value=True)
+    r = mocker.patch('builtins.open', mocker.mock_open(
+        read_data='{"username": "test", "password": "pass", "workspace": "test", "sound": "cars.wav"}'))
     config = Config()
     p.assert_called_once_with(config.config_file)
 
@@ -53,6 +56,7 @@ def test_check_config_raises_value_error_if_no_configfile_present(mocker):
 
 
 def test_read_config_file_returns_dictionary(mocker):
+    mocker.patch('os.path.exists', return_value=True)
     p = mocker.patch(
         'builtins.open',
         mocker.mock_open(

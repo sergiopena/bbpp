@@ -1,7 +1,7 @@
 import json
 import os.path
 
-from typing import Optional
+from typing import Optional, Dict
 
 
 class Config:
@@ -53,7 +53,7 @@ class Config:
             }
             f.write(json.dumps(config))
 
-    def _read_config_file(self) -> dict[str, str]:
+    def _read_config_file(self) -> Dict[str, str]:
         with open(self.config_file, 'r') as f:
             config = json.loads(f.read())
             return config
