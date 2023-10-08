@@ -1,5 +1,2 @@
-pytest
-pytest-mock
-pytest-httpx
-pytest-cov
-pytest-asyncio
+-r requirements-ci.txt
+pre-commit==3.4.0

@@ -14,7 +14,19 @@ def test_argparser_config_requires_username_and_password():
 
 
 def test_argparser_config_all_params():
-    args = ArgParser.parse(['config', '-u', 'test', '-p', 'testpwd', '-s', 'test.wav', '-w', 'test'])
+    args = ArgParser.parse(
+        [
+            'config',
+            '-u',
+            'test',
+            '-p',
+            'testpwd',
+            '-s',
+            'test.wav',
+            '-w',
+            'test',
+        ]
+    )
     assert args.username == 'test'
     assert args.password == 'testpwd'
     assert args.sound == 'test.wav'

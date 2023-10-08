@@ -35,7 +35,10 @@ async def test_get_all_pages(mocker, httpx_mock):
     httpx_mock.add_response(json={'values': [{'name': 'test2'}]})
     r = await bb._get_all_pages(pages=2)
     assert type(r) == list
-    assert r == [{'values': [{'name': 'test'}]}, {'values': [{'name': 'test2'}]}]
+    assert r == [
+        {'values': [{'name': 'test'}]},
+        {'values': [{'name': 'test2'}]},
+    ]
 
 
 def test_parse_repos(mocker):

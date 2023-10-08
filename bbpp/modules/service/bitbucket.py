@@ -5,19 +5,17 @@ import bbpp
 import httpx
 from notifypy import Notify
 from .config import Config
-from typing import List
 
 
 class BitBucket:
     def __init__(self, config: Config):
-        self.config = config
-        self.ENDPOINT = 'https://api.bitbucket.org/2.0'
-        self.repositories = list[str]
-        self.state = list[tuple[str, str]]
-        self.notifier_service = Notify()
+        self.config: Config = config
+        self.ENDPOINT: str = 'https://api.bitbucket.org/2.0'
+        self.repositories: list[str] = []
+        self.state: list[tuple[str, str]] = []
+        self.notifier_service: Notify = Notify()
 
-    def get_repos(self):
-        print('Getting repos')
+    def get_repos(self) -> None:
         output = asyncio.run(self._get_first_repo())
         self.repositories = list(self.parse_repos(output))
         pages = int(output.get('size') / output.get('pagelen'))
@@ -46,47 +44,70 @@ class BitBucket:
             return repos
 
     def _get_pipelines(self, repo: str):
-        r = httpx.get(f"{self.ENDPOINT}/repositories/{self.config.workspace}/{repo}/pipelines?sort=-created_on",
-                      auth=self.config.auth)
+        r = httpx.get(
+            f'{self.ENDPOINT}/repositories/{self.config.workspace}/{repo}/pipelines?sort=-created_on',
+            auth=self.config.auth,
+        )
         return r.json()
 
-    def check(self, repo: str):
+    def check(self, repo: str) -> None:
         pipelines = self._get_pipelines(repo)
         self.print_pipeline(pipelines)
         path = f'{bbpp.__path__[0]}/assets/audio/{self.config.sound}'
         if self.update_state(pipelines):
-            self.notifier_service.title = f"BitBucket {repo} pipeline"
-            self.notifier_service.message = "Pipeline state changed"
-            self.notifier_service.application_name = "BBPP"
+            self.notifier_service.title = f'BitBucket {repo} pipeline'
+            self.notifier_service.message = 'Pipeline state changed'
+            self.notifier_service.application_name = 'BBPP'
             if platform.system() == 'Darwin':
                 self.notifier_service.audio = path
             self.notifier_service.send()
 
-    from typing import Dict
     def update_state(self, pipelines: dict[str, list]) -> bool:
-        state = []
-        pipelines = pipelines.get('values')
-        for pipeline in pipelines:
-            state.append(self.parse_state(pipeline))
+        state: list[tuple[str, str]] = []
 
-        if self.state != state and self.state != []:
-            return True
+        from typing import Optional
+
+        pipeline_values: Optional[list[dict]] = pipelines.get('values')
+        if pipeline_values:
+            for pipeline in pipeline_values:
+                state.append(self.parse_state(pipeline))
+
+        if self.state != state:
+            if self.state != []:
+                return True
 
         self.state = state
         return False
 
-    @staticmethod
-    def parse_repos(output: dict[str, list]):
-        for repo in output.get('values'):
-            yield repo.get('name')
+    from typing import Iterator
 
     @staticmethod
-    def print_pipeline(pipelines: dict):
-        for pipeline in pipelines.get('values'):
-            print(
-                f"Pipeline: {pipeline.get('state').get('name')} {pipeline.get('created_on')} {pipeline.get('duration_in_seconds')}s")
+    def parse_repos(output: dict[str, list]) -> Iterator[str]:
+        values = output.get('values')
+        if values:
+            for repo in values:
+                yield repo.get('name')
 
     @staticmethod
-    def parse_state(pipeline: dict):
-        return pipeline.get('uuid'), pipeline.get('state').get('name')
-        pass
+    def print_pipeline(pipelines: dict) -> None:
+        values = pipelines.get('values')
+        if values:
+            for pipeline in values:
+                print(
+                    f"Pipeline: {pipeline.get('state').get('name')} {pipeline.get('created_on')} {pipeline.get('duration_in_seconds')}s"
+                )
+
+    @staticmethod
+    def parse_state(pipeline: dict) -> tuple[str, str]:
+        uuid = pipeline.get('uuid')
+        state = pipeline.get('state')
+
+        if state:
+            name = state.get('name')
+        else:
+            raise ValueError('Could not parse pipeline')
+
+        if uuid and name:
+            return uuid, name
+        else:
+            raise ValueError('Could not parse pipeline')
