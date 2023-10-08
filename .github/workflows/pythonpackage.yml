@@ -12,9 +12,9 @@ jobs:
         python-version: [3.8, 3.9]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -23,7 +23,7 @@ jobs:
         pip install -r bbpp/requirements-ci.txt
     - name: Lint check the code
       run: |
-        blue --check bbpp/*
+        blue . --check --diff --extend-exclude requirements*
     - name: Strict typing check
       run: |
         mypy bbpp/*.py --ignore-missing-imports
@@ -32,4 +32,5 @@ jobs:
         bandit bbpp/*.py -ll
     - name: Tests
       run: |
-        pytest --cov=bbpp cov-fail-under=80 tests/*
+        pushd bbpp
+        pytest --cov=bbpp --cov-fail-under=80 tests/*

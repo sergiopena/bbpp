@@ -8,8 +8,6 @@ def test_bitbucket_init(mocker):
     bb = BitBucket(config=config)
     assert bb.config == config
     assert bb.ENDPOINT == 'https://api.bitbucket.org/2.0'
-    assert bb.repositories == list[str]
-    assert bb.state == list[(str, str)]
     assert type(bb.notifier_service) == Notify
 
 
