@@ -1,6 +1,6 @@
 from pytest import raises
 
-from ..modules.service.config import Config
+from bbpp.modules.service.config import Config
 
 
 def test_config_calls_write_file(mocker):
