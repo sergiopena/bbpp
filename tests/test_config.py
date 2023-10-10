@@ -1,6 +1,6 @@
 from pytest import raises
 
-from ..modules.service.config import Config
+from bbpp.modules.service.config import Config
 
 
 def test_config_calls_write_file(mocker):
@@ -42,8 +42,12 @@ def test_config_reads_file_if_not_username_and_password(mocker):
 
 def test_check_config_file_exists(mocker):
     p = mocker.patch('os.path.exists', return_value=True)
-    r = mocker.patch('builtins.open', mocker.mock_open(
-        read_data='{"username": "test", "password": "pass", "workspace": "test", "sound": "cars.wav"}'))
+    r = mocker.patch(
+        'builtins.open',
+        mocker.mock_open(
+            read_data='{"username": "test", "password": "pass", "workspace": "test", "sound": "cars.wav"}'
+        ),
+    )
     config = Config()
     p.assert_called_once_with(config.config_file)
 

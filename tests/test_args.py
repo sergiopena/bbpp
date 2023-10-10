@@ -1,6 +1,6 @@
 from pytest import raises
 
-from ..modules.service.argparser import ArgParser
+from bbpp.modules.service.argparser import ArgParser
 
 
 def test_argparser_selects_pipeline():

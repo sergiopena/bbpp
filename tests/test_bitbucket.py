@@ -1,6 +1,6 @@
 import pytest
 from notifypy import Notify
-from ..modules.service.bitbucket import BitBucket
+from bbpp.modules.service.bitbucket import BitBucket
 
 
 def test_bitbucket_init(mocker):
