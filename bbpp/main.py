@@ -28,7 +28,7 @@ if args.repository:
     elif len(repolist) == 1:
         print(f'Repository {repolist[0]} found')
         while True:
-            _ = call('clear' if os.name == 'posix' else 'cls')
+            _ = call('clear' if os.name == 'posix' else 'cmd /c cls')
             bb.check(repo=repolist[0])
             time.sleep(10)
     else:
