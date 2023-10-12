@@ -8,7 +8,7 @@ def read(fname):
 
 setuptools.setup(
     name='bbpp',
-    version='0.0.3',
+    version='0.0.4',
     author='Sergio Pena',
     author_email='isergiopena@gmail.com',
     description=(
